@@ -74,14 +74,14 @@ service gatekeeper-1-0 /vendor/bin/hw/android.hardware.gatekeeper@1.0-service
     disabled
     seclabel u:r:recovery:s0
 
-service keymaster-4-0 /system/bin/android.hardware.keymaster@4.0-service.beanpod
-    user root
-    group root drmrpc
-    disabled
-    oneshot
+service vendor.keymaster-4-0-beanpod /system/bin/hw/android.hardware.keymaster@4.0-service.beanpod
+    class early_hal
+    user system
+    group system drmrpc
     seclabel u:r:recovery:s0
 
 on property:vendor.sys.listener.registered=true
+    start keymaster-4-0
     start gatekeeper-1-0
     
 on property:hwservicemanager.ready=true
