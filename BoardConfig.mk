@@ -22,6 +22,18 @@ ALLOW_MISSING_DEPENDENCIES := true
 
 DEVICE_PATH := device/infinix/X695C
 
+# A/B
+AB_OTA_UPDATER := true
+AB_OTA_PARTITIONS += \
+    system \
+    system_ext \
+    vendor \
+    product \
+    boot \
+    vbmeta_vendor \
+    vbmeta_system
+BOARD_USES_RECOVERY_AS_BOOT := true
+
 # Architecture
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
@@ -36,6 +48,8 @@ TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := generic
 TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a53
+
+# 64_BIT
 TARGET_BOARD_SUFFIX := _64
 TARGET_USES_64_BIT_BINDER := true
 TARGET_SUPPORTS_64_BIT_APPS := true
@@ -46,10 +60,6 @@ DEXPREOPT_GENERATE_APEX_IMAGE := true
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := CY-X695C-H854-J
 TARGET_NO_BOOTLOADER := true
-
-# Platform
-TARGET_BOARD_PLATFORM := mt6785
-PRODUCT_PLATFORM := mt6785
 
 # Assert
 TARGET_OTA_ASSERT_DEVICE := X695C,X695,x695c
@@ -96,7 +106,16 @@ BOARD_SUPER_PARTITION_GROUPS := infinix_dynamic_partitions
 BOARD_INFINIX_DYNAMIC_PARTITIONS_PARTITION_LIST := system system_ext vendor product
 BOARD_INFINIX_DYNAMIC_PARTITIONS_SIZE := 9122611200 # TODO: Fix hardcoded value
 
-# AVB
+# Platform
+TARGET_BOARD_PLATFORM := mt6785
+PRODUCT_PLATFORM := mt6785
+
+# Recovery
+TARGET_USERIMAGES_USE_EXT4 := true
+TARGET_USERIMAGES_USE_F2FS := true
+TARGET_NO_RECOVERY := true
+
+# Verified Boot
 BOARD_AVB_ENABLE := true
 BOARD_AVB_VBMETA_SYSTEM := system product
 BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
@@ -113,42 +132,32 @@ BOARD_AVB_RECOVERY_ALGORITHM := SHA256_RSA2048
 BOARD_AVB_RECOVERY_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
 BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION := 3
 
-# System as root
+# System As Root
 BOARD_SUPPRESS_SECURE_ERASE := true
 BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
-
-# System properties
-TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
-
-# Partitions configs
-BOARD_USES_RECOVERY_AS_BOOT := true
-TARGET_NO_RECOVERY := true
 BOARD_USES_METADATA_PARTITION := true
-TARGET_USERIMAGES_USE_F2FS := true
 
-# AB
-AB_OTA_UPDATER := true
+# System Properties
+TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
+TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
 
 # Workaround for copying error vendor files to recovery ramdisk
 TARGET_COPY_OUT_PRODUCT := product
 TARGET_COPY_OUT_VENDOR := vendor
 TARGET_COPY_OUT_SYSTEM_EXT = system_ext
 
-# Recovery
-TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
-TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
-
 # Additional binaries & libraries needed for recovery
 TARGET_RECOVERY_DEVICE_MODULES += \
     libkeymaster4 \
     libpuresoftkeymasterdevice
 
-# Hack: prevent anti rollback
+# Hack: Prevent Anti Rollback
 PLATFORM_SECURITY_PATCH := 2099-12-31
 VENDOR_SECURITY_PATCH := 2099-12-31
 PLATFORM_VERSION := 16.1.0
 
-# TWRP-Specific configuration
+# TWRP Configuration
 TW_THEME := portrait_hdpi
 TW_DEVICE_VERSION := AOSP_X695C | By Gilanggegea™
 TW_EXTRA_LANGUAGES := true
@@ -158,22 +167,24 @@ TW_EXCLUDE_TWRPAPP := true
 TW_INCLUDE_REPACKTOOLS := true
 TW_EXCLUDE_APEX := true
 TW_INCLUDE_FASTBOOTD := true
-TWRP_INCLUDE_LOGCAT := true
-TARGET_USES_LOGD := true
-TARGET_USES_MKE2FS := true
 
-# Device config
+# Device Config
 TW_BRIGHTNESS_PATH := "/sys/class/leds/lcd-backlight/brightness"
 TW_MAX_BRIGHTNESS := 2047
 TW_DEFAULT_BRIGHTNESS := 1200
 TW_SCREEN_BLANK_ON_BOOT := true
 TW_FRAMERATE := 90
 TW_EXCLUDE_DEFAULT_USB_INIT := true
-RECOVERY_SDCARD_ON_DATA := true
-TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.0/lun.%d/file
 TW_HAS_NO_RECOVERY_PARTITION := true
+
+# System Config
 BOARD_USES_MTK_HARDWARE := true
+RECOVERY_SDCARD_ON_DATA := true
+TWRP_INCLUDE_LOGCAT := true
+TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.0/lun.%d/file
 TARGET_SCREEN_HEIGHT := 2460
+TARGET_USES_LOGD := true
+TARGET_USES_MKE2FS := true
 
 # Decryption
 TW_INCLUDE_CRYPTO := true
